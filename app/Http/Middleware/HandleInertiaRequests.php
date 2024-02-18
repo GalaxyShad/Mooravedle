@@ -3,6 +3,9 @@
 namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
+use Illuminate\Log\Logger;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
@@ -29,10 +32,13 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $role_name = Auth::user()?->role->name;
+
         return [
             ...parent::share($request),
             'auth' => [
                 'user' => $request->user(),
+                'is_techaer' => $role_name == 'Преподаватель'
             ],
         ];
     }

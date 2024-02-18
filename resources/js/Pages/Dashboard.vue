@@ -1,22 +1,42 @@
-<script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head } from '@inertiajs/vue3';
-</script>
-
 <template>
-    <Head title="Dashboard" />
+  <Head title="Список курсов" />
 
-    <AuthenticatedLayout>
-        <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Dashboard</h2>
-        </template>
+  <AuthenticatedLayout>
+    <template #header>
+      <div class="flex flex-row justify-between items-center">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+          Список курсов
+        </h2>
 
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6 text-gray-900">You're logged in!</div>
-                </div>
-            </div>
-        </div>
-    </AuthenticatedLayout>
+        <el-button type="primary" tag="a" href="/course"
+          >Создать новый курс</el-button
+        >
+      </div>
+    </template>
+
+    <div v-if="courseList.length !== 0" class="flex flex-row flex-wrap gap-4 py-4">
+      <Course v-for="c in courseList" :name="c.name" :teacher="c.creator.name" />
+    </div>
+    <el-empty v-else/>
+  </AuthenticatedLayout>
 </template>
+
+<script setup lang="ts">
+import Course from '@/Components/Course.vue'
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
+import { Head, usePage } from '@inertiajs/vue3'
+import { computed } from 'vue';
+
+interface Course {
+  id: number;
+  name: string;
+  creator: {
+    name: string,
+  }
+};
+
+const courseList = computed<Course[]>(() => usePage().props.courseList as Course[]);
+
+console.log(courseList.value);
+
+</script>
