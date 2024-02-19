@@ -27,7 +27,7 @@
 
       <el-form-item class="mt-8">
         <el-button type="primary" @click="onSubmit">Создать</el-button>
-        <el-button tag="a" href="/dashboard">Оменить</el-button>
+        <el-button @click="goBack">Оменить</el-button>
       </el-form-item>
     </el-form>
   </AuthenticatedLayout>
@@ -38,6 +38,9 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import { Head, useForm, usePage } from '@inertiajs/vue3'
 import { reactive, ref } from 'vue'
 
+function goBack() {
+  window.history.back()
+}
 
 // do not use same name with ref
 const form = useForm({

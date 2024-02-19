@@ -4,7 +4,10 @@
         "paths": {
             "@/*": ["resources/js/*"],
             "ziggy-js": ["./vendor/tightenco/ziggy"]
-        }
+        },
+        "target": "es5",
+        "module": "commonjs",
+        "lib": [ "es2015", "dom" ]
     },
     "exclude": ["node_modules", "public"]
 }

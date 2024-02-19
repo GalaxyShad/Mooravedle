@@ -35,7 +35,19 @@ const showingNavigationDropdown = ref<boolean>(false)
                   :href="route('dashboard')"
                   :active="route().current('dashboard')"
                 >
-                  Dashboard
+                  Все курсы
+                </NavLink>
+                <NavLink
+                  :href="route('mycourses')"
+                  :active="route().current('mycourses')"
+                >
+                  Мои курсы
+                </NavLink>
+                <NavLink v-if="$page.props.auth['is_techaer']"
+                  :href="route('createdcourses')"
+                  :active="route().current('createdcourses')"
+                >
+                  Созданные мной курсы
                 </NavLink>
               </div>
             </div>

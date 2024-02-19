@@ -8,15 +8,19 @@
           Список курсов
         </h2>
 
+        <SelectUser/>
+
         <el-button type="primary" tag="a" href="/course"
           >Создать новый курс</el-button
         >
       </div>
     </template>
 
+
+
     <div
       v-if="courseList.length !== 0"
-      class="flex flex-row flex-wrap gap-4 py-4"
+      class="flex flex-row flex-wrap gap-4 py-4 justify-between mx-auto"
     >
       <a v-for="c in courseList" :href="`/course/${c.id}`">
         <Course :name="c.name" :teacher="c.creator.name" />
@@ -28,6 +32,7 @@
 
 <script setup lang="ts">
 import Course from '@/Components/Course.vue'
+import SelectUser from '@/Components/SelectUser.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import { Head, usePage } from '@inertiajs/vue3'
 import { computed } from 'vue'

@@ -4,9 +4,12 @@
   <AuthenticatedLayout>
     <template #header>
       <div class="flex flex-row justify-between items-center">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-          {{ props.course.name }}
-        </h2>
+        <div class="flex flex-row gap-2 justify-center items-center">
+          <el-button @click="goBack"> &lt </el-button>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+              {{ props.course.name }}
+            </h2>
+        </div>
 
         <div>
           <el-button> Редактировать курс </el-button>
@@ -35,7 +38,7 @@
                 </div>
                 <div class="flex flex-row  items-center gap-2">
                     <span class="text-gray-400"> {{ t.deadline }} </span>
-                    <el-button>Удалить</el-button>
+                    <el-button @click="() => onTaskDestroy(t.id)">Удалить</el-button>
                 </div>
             </div>
         </div>
@@ -74,7 +77,7 @@
 import {Document} from '@element-plus/icons-vue'
 import Course from '@/Components/Course.vue'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
-import { Head, usePage } from '@inertiajs/vue3'
+import { Head, usePage, useForm, router } from '@inertiajs/vue3'
 import { computed } from 'vue'
 
 interface Course {
@@ -98,6 +101,14 @@ interface Props {
 }
 
 const props = computed<Props>(() => usePage().props.props as Props)
+
+function goBack() {
+  window.history.back()
+}
+
+function onTaskDestroy(id: number) {
+  useForm({}).delete(route('task.destroy', { id }));
+}
 
 console.log(props.value)
 </script>

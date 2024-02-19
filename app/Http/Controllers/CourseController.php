@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Course;
 use App\Models\Task;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -14,10 +15,24 @@ class CourseController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function indexDashboard()
     {
         return Inertia::render('Dashboard', [
             'courseList' => Course::with('creator')->get()
+        ]);
+    }
+
+    public function indexCreatedCourses()
+    {
+        return Inertia::render('Dashboard', [
+            'courseList' => Course::where('creator_id', Auth::user()->id)->with('creator')->get()
+        ]);
+    }
+
+    public function indexMyCourses()
+    {
+        return Inertia::render('Dashboard', [
+            'courseList' => []
         ]);
     }
 
