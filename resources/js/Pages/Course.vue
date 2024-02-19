@@ -17,11 +17,29 @@
 
     <div class="flex flex-row gap-4 w-full">
       <div class="flex flex-col w-full">
-        <div class="bg-white rounded-md px-4 py-2 border flex flex-row justify-between">
+        <div
+          class="bg-white rounded-md px-4 py-2 border flex flex-row justify-between mb-2"
+        >
           <h2 class="text-bold text-xl">Задания</h2>
-          <el-button> Добавить </el-button>
+          <el-button tag="a" :href="`${props.course.id}/task`">
+            Добавить
+          </el-button>
         </div>
-        <div class="flex justify-center items-center">
+        <div v-if="props.taskList.length !== 0" class="flex flex-col gap-1">
+            <div v-for="t in props.taskList" class="bg-white rounded-md px-4 py-2 border flex flex-row justify-between gap-2 items-center">
+                <div class="flex flex-row  items-center gap-2">
+                    <div class="aspect-square bg-blue-400 w-12 rounded-md flex justify-center items-center text-white">
+                        <el-icon size="24"><Document /></el-icon>
+                    </div>
+                    <span>{{ t.name }}</span>
+                </div>
+                <div class="flex flex-row  items-center gap-2">
+                    <span class="text-gray-400"> {{ t.deadline }} </span>
+                    <el-button>Удалить</el-button>
+                </div>
+            </div>
+        </div>
+        <div v-else class="flex justify-center items-center">
           <el-empty />
         </div>
       </div>
@@ -53,6 +71,7 @@
 </template>
 
 <script setup lang="ts">
+import {Document} from '@element-plus/icons-vue'
 import Course from '@/Components/Course.vue'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import { Head, usePage } from '@inertiajs/vue3'
@@ -67,7 +86,11 @@ interface Course {
   }
 }
 
-interface Task {}
+interface Task {
+  id: number
+  name: string
+  deadline: Date
+}
 
 interface Props {
   course: Course

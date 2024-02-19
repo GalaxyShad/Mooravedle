@@ -52,6 +52,12 @@ return new class extends Migration
             $t->string('file_name')->nullable()->comment('Название файла ответа студента');
             $t->string('file_extension', 10)->nullable()->comment('Расширение файла ответа студента');
 
+            // S3 db S3 совместимые хранилища. Есть у Amazon. MinIO
+
+            // Auth
+            // CRUD
+            // Pagination
+
             $t->foreignId('teacher_id')->nullable()->constrained(table: 'users');
             $t->string('teacher_comment')->nullable()->comment('Комментарий преподавателя');
             $t->unsignedInteger('mark')->nullable()->comment('Оценка');

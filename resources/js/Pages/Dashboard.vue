@@ -14,10 +14,15 @@
       </div>
     </template>
 
-    <div v-if="courseList.length !== 0" class="flex flex-row flex-wrap gap-4 py-4">
-      <Course v-for="c in courseList" :name="c.name" :teacher="c.creator.name" />
+    <div
+      v-if="courseList.length !== 0"
+      class="flex flex-row flex-wrap gap-4 py-4"
+    >
+      <a v-for="c in courseList" :href="`/course/${c.id}`">
+        <Course :name="c.name" :teacher="c.creator.name" />
+      </a>
     </div>
-    <el-empty v-else/>
+    <el-empty v-else />
   </AuthenticatedLayout>
 </template>
 
@@ -25,18 +30,19 @@
 import Course from '@/Components/Course.vue'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import { Head, usePage } from '@inertiajs/vue3'
-import { computed } from 'vue';
+import { computed } from 'vue'
 
 interface Course {
-  id: number;
-  name: string;
+  id: number
+  name: string
   creator: {
-    name: string,
+    name: string
   }
-};
+}
 
-const courseList = computed<Course[]>(() => usePage().props.courseList as Course[]);
+const courseList = computed<Course[]>(
+  () => usePage().props.courseList as Course[]
+)
 
-console.log(courseList.value);
-
+console.log(courseList.value)
 </script>

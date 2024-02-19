@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\TaskController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -42,6 +43,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/course/{id}', [CourseController::class, 'show'])->name('course.show');
     Route::get('/course', [CourseController::class, 'create'])->name('course.create');
     Route::post('/course', [CourseController::class, 'store'])->name('course.store');
+
+    Route::get('/course/{id}/task', [TaskController::class, 'create'])->name('task.show');
+    Route::post('/course/{id}/task', [TaskController::class, 'store'])->name('task.store');
 });
 
 require __DIR__.'/auth.php';

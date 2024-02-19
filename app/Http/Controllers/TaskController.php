@@ -2,31 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Course;
 use App\Models\Task;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 
-class CourseController extends Controller
+class TaskController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return Inertia::render('Dashboard', [
-            'courseList' => Course::with('creator')->get()
-        ]);
+        //
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(string $courseId)
     {
-        return Inertia::render('CourseAdd');
+        return Inertia::render('TaskAdd', ['courseId' => $courseId]);
     }
 
     /**
@@ -34,12 +30,16 @@ class CourseController extends Controller
      */
     public function store(Request $request)
     {
-        Course::create([
+        Task::create([
             'name' => request()->name,
-            'creator_id' => request()->user()->id,
+            'course_id' => request()->courseId,
+            'description' => request()->description,
+            'deadline' => request()->deadline,
+            'max_mark' => 5,
+            'passing_mark' => 3,
         ]);
 
-        return Redirect::to('/dashboard');
+        return Redirect::to('/course/' . request()->courseId);
     }
 
     /**
@@ -47,15 +47,7 @@ class CourseController extends Controller
      */
     public function show(string $id)
     {
-        $taskList = Task::all()->where('course_id', $id);
-        $c = Course::with('creator')->where('id', $id)->get()->first();
-
-        return Inertia::render('Course', [
-            'props' => [
-                'taskList' => $taskList,
-                'course' => $c,
-            ]
-        ]);
+        //
     }
 
     /**
@@ -63,7 +55,7 @@ class CourseController extends Controller
      */
     public function edit(string $id)
     {
-        return $id;
+        //
     }
 
     /**

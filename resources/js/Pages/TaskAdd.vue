@@ -20,16 +20,12 @@
       </el-form-item>
 
       <el-form-item label="Срок сдачи">
-        <el-date-picker type="datetime" placeholder="Select date and time" />
+        <el-date-picker v-model="form.deadline" type="datetime" placeholder="Select date and time" />
       </el-form-item>
 
-      <quill-editor theme="snow"></quill-editor>
+      <quill-editor v-model:content="form.description" contentType="html" theme="snow"></quill-editor>
 
-      <el-form-item label="Проходной балл">
-        <el-slider :min="1" :max="100" />
-      </el-form-item>
-
-      <el-form-item>
+      <el-form-item class="mt-8">
         <el-button type="primary" @click="onSubmit">Создать</el-button>
         <el-button tag="a" href="/dashboard">Оменить</el-button>
       </el-form-item>
@@ -39,17 +35,20 @@
 
 <script lang="ts" setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
-import { Head, useForm } from '@inertiajs/vue3'
+import { Head, useForm, usePage } from '@inertiajs/vue3'
 import { reactive, ref } from 'vue'
+
 
 // do not use same name with ref
 const form = useForm({
-  name: '' as string,
+  name: 'Новый курс' as string,
+  description: '<p><br></p>' as string,
+  deadline: new Date(),
+  courseId: usePage().props.courseId
 })
 
 const onSubmit = () => {
-  console.log('sadasd')
-  form.post(route('course.store'))
+  form.post(route('task.store', { id: form.courseId }))
 }
 </script>
 
