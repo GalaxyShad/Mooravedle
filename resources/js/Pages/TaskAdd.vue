@@ -13,15 +13,14 @@
     <el-form
       class="bg-white rounded px-4 py-4"
       :model="form"
-      label-width="240px"
     >
       <el-form-item label="Название">
         <el-input v-model="form.name" />
       </el-form-item>
 
-      <el-form-item label="Срок сдачи">
+      <!-- <el-form-item label="Срок сдачи">
         <el-date-picker v-model="form.deadline" type="datetime" placeholder="Select date and time" />
-      </el-form-item>
+      </el-form-item> -->
 
       <quill-editor v-model:content="form.description" contentType="html" theme="snow"></quill-editor>
 

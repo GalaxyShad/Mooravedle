@@ -45,8 +45,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/course/task', function () { return Inertia::render('TaskAdd'); });
 
     Route::get('/course/{id}', [CourseController::class, 'show'])->name('course.show');
+    Route::post('/course/{id}/participants', [CourseController::class, 'addParticipants'])->name('course.add_participant');
+
     Route::get('/course', [CourseController::class, 'create'])->name('course.create');
     Route::post('/course', [CourseController::class, 'store'])->name('course.store');
+    
 
     Route::delete('/task/{id}', [TaskController::class, 'destroy'])->name('task.destroy');
 

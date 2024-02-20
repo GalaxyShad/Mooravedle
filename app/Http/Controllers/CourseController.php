@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Course;
 use App\Models\Task;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -18,7 +19,7 @@ class CourseController extends Controller
     public function indexDashboard()
     {
         return Inertia::render('Dashboard', [
-            'courseList' => Course::with('creator')->get()
+            'courseList' => Course::with('creator')->get(),
         ]);
     }
 
@@ -31,9 +32,22 @@ class CourseController extends Controller
 
     public function indexMyCourses()
     {
+        $user = User::where('id', Auth::user()->id)->get()->first();
+
         return Inertia::render('Dashboard', [
-            'courseList' => []
+            'courseList' => $user->myCourses()->with('creator')->get()
         ]);
+    }
+
+    public function addParticipants(Request $req, string $id)
+    {
+        Course::where('id', $id)
+            ->get()
+            ->first()
+            ->participants()
+            ->attach($req->users);
+
+        return Redirect::refresh();
     }
 
     /**
@@ -65,10 +79,14 @@ class CourseController extends Controller
         $taskList = Task::all()->where('course_id', $id);
         $c = Course::with('creator')->where('id', $id)->get()->first();
 
+        $availableForCurrentUser = ($c->creator_id == Auth::user()->id) || ($c->participants()->where('id', Auth::user()->id)->count() != 0);
+
         return Inertia::render('Course', [
             'props' => [
                 'taskList' => $taskList,
                 'course' => $c,
+                'participants' => $c->participants()->get(),
+                'isAvailableForCurrentUser' => $availableForCurrentUser
             ]
         ]);
     }

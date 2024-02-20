@@ -7,16 +7,16 @@
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
           Список курсов
         </h2>
-
-        <SelectUser/>
-
-        <el-button type="primary" tag="a" href="/course"
-          >Создать новый курс</el-button
+        <el-button
+          v-if="currentUser().is_teacher"
+          type="primary"
+          tag="a"
+          href="/course"
         >
+          Создать новый курс
+        </el-button>
       </div>
     </template>
-
-
 
     <div
       v-if="courseList.length !== 0"
@@ -31,10 +31,11 @@
 </template>
 
 <script setup lang="ts">
-import Course from '@/Components/Course.vue'
-import SelectUser from '@/Components/SelectUser.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
+import Course from '@/Components/Course.vue'
+
 import { Head, usePage } from '@inertiajs/vue3'
+import { currentUser } from '@/Helpers/User'
 import { computed } from 'vue'
 
 interface Course {
