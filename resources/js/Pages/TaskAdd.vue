@@ -10,25 +10,24 @@
       </div>
     </template>
 
-    <el-form
-      class="bg-white rounded px-4 py-4"
-      :model="form"
-    >
-      <el-form-item label="Название">
-        <el-input v-model="form.name" />
-      </el-form-item>
+    <div class="bg-white rounded px-4 py-4">
+      <el-form :model="form" class="flex flex-col h-full">
+        <el-form-item label="Название">
+          <el-input v-model="form.name" />
+        </el-form-item>
 
-      <!-- <el-form-item label="Срок сдачи">
-        <el-date-picker v-model="form.deadline" type="datetime" placeholder="Select date and time" />
-      </el-form-item> -->
+        <quill-editor
+          v-model:content="form.description"
+          contentType="html"
+          theme="snow"
+        ></quill-editor>
 
-      <quill-editor v-model:content="form.description" contentType="html" theme="snow"></quill-editor>
-
-      <el-form-item class="mt-8">
-        <el-button type="primary" @click="onSubmit">Создать</el-button>
-        <el-button @click="goBack">Оменить</el-button>
-      </el-form-item>
-    </el-form>
+        <el-form-item class="mt-8">
+          <el-button type="primary" @click="onSubmit">Создать</el-button>
+          <el-button @click="goBack">Оменить</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
   </AuthenticatedLayout>
 </template>
 
@@ -46,41 +45,10 @@ const form = useForm({
   name: 'Новый курс' as string,
   description: '<p><br></p>' as string,
   deadline: new Date(),
-  courseId: usePage().props.courseId
+  courseId: usePage().props.courseId,
 })
 
 const onSubmit = () => {
   form.post(route('task.store', { id: form.courseId }))
 }
 </script>
-
-<style scoped>
-.avatar-uploader .avatar {
-  width: 178px;
-  height: 178px;
-  display: block;
-}
-</style>
-
-<style>
-.avatar-uploader .el-upload {
-  border: 1px dashed var(--el-border-color);
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  transition: var(--el-transition-duration-fast);
-}
-
-.avatar-uploader .el-upload:hover {
-  border-color: var(--el-color-primary);
-}
-
-.el-icon.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 178px;
-  height: 178px;
-  text-align: center;
-}
-</style>

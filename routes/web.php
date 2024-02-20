@@ -50,10 +50,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/course', [CourseController::class, 'create'])->name('course.create');
     Route::post('/course', [CourseController::class, 'store'])->name('course.store');
     
-
+    
+    Route::get('/task/{id}', [TaskController::class, 'show'])->name('task.show');
     Route::delete('/task/{id}', [TaskController::class, 'destroy'])->name('task.destroy');
 
-    Route::get('/course/{id}/task', [TaskController::class, 'create'])->name('task.show');
+    Route::get('/course/{id}/task', [TaskController::class, 'create'])->name('task.create');
     Route::post('/course/{id}/task', [TaskController::class, 'store'])->name('task.store');
 });
 

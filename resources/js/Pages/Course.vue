@@ -40,7 +40,7 @@
                 >
                   <el-icon size="24"><Document /></el-icon>
                 </div>
-                <span>{{ t.name }}</span>
+                <a :href="`/task/${t.id}`">{{ t.name }}</a>
               </div>
               <div class="flex flex-row items-center gap-2">
                 <span class="text-gray-400"> {{ t.deadline }} </span>
@@ -114,6 +114,7 @@
         :key="item.id"
         :label="item.name"
         :value="item.id"
+        :disabled="item.disabled"
       />
     </el-select>
     <template #footer>
@@ -163,6 +164,7 @@ interface Props {
 interface SearchUserItem {
   id: number
   name: string
+  disabled: boolean
 }
 
 const isSearchDialogVisible = ref<boolean>(false)
@@ -199,8 +201,15 @@ function addUsersToCourse() {
 async function searchUser(search_value: string) {
   isUsersToInviteLoading.value = true
 
-  const { data } = await axios.post(route('profile.search'), { search_value })
-  searchUserList.value = data
+  const { data } = await axios.post<SearchUserItem[]>(route('profile.search'), {
+    search_value,
+  })
+  searchUserList.value = data.map((x) => ({
+    ...x,
+    disabled:
+      props.participants.find((y) => y.id === x.id) !== undefined ||
+      x.id === props.course.creator.id,
+  }));
 
   isUsersToInviteLoading.value = false
 }

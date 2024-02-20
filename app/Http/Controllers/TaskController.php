@@ -47,7 +47,11 @@ class TaskController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $tsk = Task::where('id', $id)->get()->first();
+
+        return Inertia::render('Task', [
+            'task' => $tsk
+        ]);
     }
 
     /**
