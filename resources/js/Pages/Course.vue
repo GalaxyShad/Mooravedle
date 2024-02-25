@@ -44,7 +44,7 @@
                 >
                   <el-icon size="24"><Document /></el-icon>
                 </div>
-                <a :href="`/task/${t.id}`">{{ t.name }}</a>
+                <a class="max-w-96 hover:text-blue-500 transition-colors ease-in-out" :href="`/task/${t.id}`">{{ t.name }}</a>
               </div>
               <div class="flex flex-row items-center gap-1">
                 <span class="text-gray-400"> {{ t.deadline }} </span>
