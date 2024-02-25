@@ -5,7 +5,7 @@
     <template #header>
       <div class="flex flex-row justify-between items-center">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-          Список курсов
+          {{ `Список курсов (${courseCount})` }}
         </h2>
         <el-button
           v-if="currentUser().is_teacher"
@@ -20,13 +20,20 @@
 
     <div
       v-if="courseList.length !== 0"
-      class="flex flex-row flex-wrap gap-4 py-4 justify-between mx-auto"
+      class="flex flex-row flex-wrap gap-4 py-4 justify-center mx-auto"
     >
       <a v-for="c in courseList" :href="`/course/${c.id}`">
         <Course :name="c.name" :teacher="c.creator.name" />
       </a>
     </div>
     <el-empty v-else />
+    <el-pagination
+      @change="pageChange"
+      class="w-full items-center justify-center"
+      layout="prev, pager, next"
+      :default-current-page="+currentPage"
+      :page-count="pagesCount"
+    />
   </AuthenticatedLayout>
 </template>
 
@@ -34,7 +41,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import Course from '@/Components/Course.vue'
 
-import { Head, usePage } from '@inertiajs/vue3'
+import { Head, useForm, usePage, router } from '@inertiajs/vue3'
 import { currentUser } from '@/Helpers/User'
 import { computed } from 'vue'
 
@@ -46,9 +53,17 @@ interface Course {
   }
 }
 
+const currentPage = usePage().props.currentPage
+const pageName = usePage().props.pageName
+const pagesCount = computed<number>(() => usePage().props.pagesTotal as number)
+const courseCount = usePage().props.courseCount
+
 const courseList = computed<Course[]>(
   () => usePage().props.courseList as Course[]
 )
 
-console.log(courseList.value)
+function pageChange(page: string) {
+  router.get('/' + pageName + '/' + page)
+}
+
 </script>

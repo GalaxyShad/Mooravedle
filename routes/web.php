@@ -27,9 +27,9 @@ Route::get('/', function () {
     return Redirect::to('/dashboard');
 });
 
-Route::get('/dashboard', [CourseController::class, 'indexDashboard'])->middleware(['auth', 'verified'])->name('dashboard');
-Route::get('/createdcourses', [CourseController::class, 'indexCreatedCourses'])->middleware(['auth', 'verified'])->name('createdcourses');
-Route::get('/mycourses', [CourseController::class, 'indexMyCourses'])->middleware(['auth', 'verified'])->name('mycourses');
+Route::get('/dashboard/{page?}', [CourseController::class, 'indexDashboard'])->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/createdcourses/{id?}', [CourseController::class, 'indexCreatedCourses'])->middleware(['auth', 'verified'])->name('createdcourses');
+Route::get('/mycourses/{id?}', [CourseController::class, 'indexMyCourses'])->middleware(['auth', 'verified'])->name('mycourses');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

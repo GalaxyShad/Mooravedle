@@ -14,29 +14,59 @@ use PHPUnit\Framework\Constraint\Count;
 
 class CourseController extends Controller
 {
+    private int $items_per_page = 12;
+
     /**
      * Display a listing of the resource.
      */
-    public function indexDashboard()
+    public function indexDashboard(int $page = 1)
     {
+        $course_count = Course::count(); 
+
         return Inertia::render('Dashboard', [
-            'courseList' => Course::with('creator')->get(),
+            'courseList' => Course::with('creator')
+                ->get()
+                ->skip(($page-1) * $this->items_per_page)
+                ->take($this->items_per_page),
+            'courseCount' => $course_count,
+            'currentPage' => $page,
+            'pageName' => "dashboard",
+            'pagesTotal' => ceil($course_count / $this->items_per_page)
         ]);
     }
 
-    public function indexCreatedCourses()
+    public function indexCreatedCourses(int $page = 1)
     {
+        $course_count = Course::where('creator_id', Auth::user()->id)->count();
+
         return Inertia::render('Dashboard', [
-            'courseList' => Course::where('creator_id', Auth::user()->id)->with('creator')->get()
+            'courseList' => Course::where('creator_id', Auth::user()->id)
+                ->with('creator')
+                ->skip(($page-1) * $this->items_per_page)
+                ->take($this->items_per_page)
+                ->get(),
+            'courseCount' => $course_count,
+            'currentPage' => $page,
+            'pageName' => "createdcourses",
+            'pagesTotal' => ceil($course_count / $this->items_per_page)
         ]);
     }
 
-    public function indexMyCourses()
+    public function indexMyCourses(int $page = 1)
     {
         $user = User::where('id', Auth::user()->id)->get()->first();
+        $course_count = $user->myCourses()->count();
 
         return Inertia::render('Dashboard', [
-            'courseList' => $user->myCourses()->with('creator')->get()
+            'courseList' => $user->myCourses()
+                ->with('creator')
+                ->skip(($page-1) * $this->items_per_page)
+                ->take($this->items_per_page)
+                ->get(),
+            'courseCount' => $course_count,
+            'currentPage' => $page,
+            'pageName' => "mycourses",
+            'pagesTotal' => ceil($course_count / $this->items_per_page)
         ]);
     }
 
@@ -48,10 +78,10 @@ class CourseController extends Controller
             ->participants()
             ->attach($req->users);
 
-            return Inertia::location('/course/' . $id);
+        return Inertia::location('/course/' . $id);
     }
 
-    public function removeParticipant(string $course_id, string $participant_id) 
+    public function removeParticipant(string $course_id, string $participant_id)
     {
         $course = Course::where('id', $course_id)->get()->first();
 

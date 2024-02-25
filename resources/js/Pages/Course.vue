@@ -27,7 +27,7 @@
         <div
           class="bg-white rounded-md px-4 py-2 border flex flex-row justify-between mb-2"
         >
-          <h2 class="text-bold text-xl">Задания</h2>
+          <h2 class="text-bold text-xl">Лекции и задания</h2>
           <el-button v-if="isCreator" tag="a" :href="`${props.course.id}/task`">
             Добавить
           </el-button>
