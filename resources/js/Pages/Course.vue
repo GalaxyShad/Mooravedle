@@ -101,10 +101,11 @@
           <div v-else class="flex flex-col gap-1">
             <div
               v-for="u in props.participants"
-              class="flex flex-row justify-between"
+              class="flex flex-row justify-between text-sm items-center gap-4 pb-1 border-b"
             >
-              <div>
-                {{ u.name }}
+              <div class="flex flex-col">
+                <div>{{ u.name }}</div>
+                <div class="text-gray-400">{{ u.email }}</div>
               </div>
               <el-button
                 v-if="isCreator"

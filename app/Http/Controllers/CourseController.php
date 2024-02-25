@@ -157,7 +157,7 @@ class CourseController extends Controller
         $course = Course::where('id', $id)->get()->first();
 
         $course->tasks()->delete();
-        $course->participants()->delete();
+        $course->participants()->detach();
 
         $course->delete();
 
