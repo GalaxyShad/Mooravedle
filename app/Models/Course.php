@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Course extends Model
 {
@@ -26,5 +27,9 @@ class Course extends Model
     public function participants(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'course_participants');
+    }
+
+    public function tasks(): HasMany {
+        return $this->hasMany(Task::class);
     }
 }

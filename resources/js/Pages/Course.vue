@@ -5,15 +5,15 @@
     <template #header>
       <div class="flex flex-row justify-between items-center">
         <div class="flex flex-row gap-2 justify-center items-center">
-          <el-button @click="goBack"> &lt </el-button>
+          <el-button tag="a" href="/dashboard"> &lt </el-button>
           <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ props.course.name }}
           </h2>
         </div>
 
         <div v-if="isCreator">
-          <el-button> Редактировать курс </el-button>
-          <el-button type="danger"> Удалить курс </el-button>
+          <el-button tag="a" :href="`/course/${props.course.id}/edit`"> Изменить название </el-button>
+          <el-button @click="deleteCourse" type="danger"> Удалить курс </el-button>
         </div>
       </div>
     </template>
@@ -89,8 +89,13 @@
           <div v-if="props.participants.length === 0">
             <el-empty />
           </div>
-          <div v-else>
-            <div v-for="u in props.participants">{{ u.name }}</div>
+          <div v-else class="flex flex-col gap-1">
+            <div v-for="u in props.participants" class="flex flex-row justify-between">
+              <div>
+                {{ u.name }}
+              </div>
+              <el-button plain @click="() => removeParticipant(u.id)" type="danger" size="small">-</el-button>
+            </div>
           </div>
         </div>
       </div>
@@ -184,10 +189,6 @@ onMounted(async () => {
   searchUserList.value = data
 })
 
-function goBack() {
-  window.history.back()
-}
-
 function onTaskDestroy(id: number) {
   useForm({}).delete(route('task.destroy', { id }))
 }
@@ -197,6 +198,19 @@ function addUsersToCourse() {
     route('course.add_participant', { id: props.course.id })
   )
 }
+
+function removeParticipant(id: number) {
+  useForm({}).delete(
+    route('course.remove_participant', { id: props.course.id, participant_id: id})
+  )
+}
+
+function deleteCourse() {
+  useForm({}).delete(
+    route('course.delete', { id: props.course.id })
+  )
+}
+
 
 async function searchUser(search_value: string) {
   isUsersToInviteLoading.value = true

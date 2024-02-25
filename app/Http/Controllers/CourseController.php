@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
+use PHPUnit\Framework\Constraint\Count;
 
 class CourseController extends Controller
 {
@@ -47,7 +48,16 @@ class CourseController extends Controller
             ->participants()
             ->attach($req->users);
 
-        return Redirect::refresh();
+        return Redirect::to('/course/' . $id);
+    }
+
+    public function removeParticipant(string $course_id, string $participant_id) 
+    {
+        $course = Course::where('id', $course_id)->get()->first();
+
+        $course->participants()->detach($participant_id);
+
+        return Redirect::to('/course/' . $course_id);
     }
 
     /**
@@ -55,7 +65,7 @@ class CourseController extends Controller
      */
     public function create()
     {
-        return Inertia::render('CourseAdd');
+        return Inertia::render('CourseAddOrEdit');
     }
 
     /**
@@ -96,7 +106,7 @@ class CourseController extends Controller
      */
     public function edit(string $id)
     {
-        return $id;
+        return Inertia::render('CourseAddOrEdit', ['editId' => $id]);
     }
 
     /**
@@ -104,7 +114,9 @@ class CourseController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        Course::where('id', $id)->update(['name' => $request->name]);
+
+        return Redirect::to('/course/' . $id);
     }
 
     /**
@@ -112,6 +124,13 @@ class CourseController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $course = Course::where('id', $id)->get()->first();
+
+        $course->tasks()->delete();
+        $course->participants()->delete();
+
+        $course->delete();
+
+        return Redirect::to('/dashboard');
     }
 }
