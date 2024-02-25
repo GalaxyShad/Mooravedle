@@ -10,19 +10,11 @@ use Inertia\Inertia;
 class TaskController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
      * Show the form for creating a new resource.
      */
     public function create(string $courseId)
     {
-        return Inertia::render('TaskAdd', ['courseId' => $courseId]);
+        return Inertia::render('TaskAddOrEdit', ['courseId' => $courseId]);
     }
 
     /**
@@ -31,15 +23,15 @@ class TaskController extends Controller
     public function store(Request $request)
     {
         Task::create([
-            'name' => request()->name,
-            'course_id' => request()->courseId,
-            'description' => request()->description,
-            'deadline' => request()->deadline,
+            'name' => $request->name,
+            'course_id' => $request->courseId,
+            'description' => $request->description,
+            'deadline' => $request->deadline,
             'max_mark' => 5,
             'passing_mark' => 3,
         ]);
 
-        return Redirect::to('/course/' . request()->courseId);
+        return Redirect::to('/course/' . $request->courseId);
     }
 
     /**
@@ -57,9 +49,15 @@ class TaskController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(string $courseId, string $id)
     {
-        //
+        $previousForm = Task::where('id', $id)->get()->first();
+
+        return Inertia::render('TaskAddOrEdit', [
+            'courseId' => $courseId, 
+            'editId' => $id,
+            'previousForm' => $previousForm
+        ]);
     }
 
     /**
@@ -67,7 +65,12 @@ class TaskController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        Task::where('id', $id)->update([
+            'name' => $request->name,
+            'description' => $request->description,
+        ]);
+
+        return Redirect::to('/course/' . $request->course_id);
     }
 
     /**
@@ -77,6 +80,7 @@ class TaskController extends Controller
     {
         Task::destroy($id);
 
-        return Redirect::back();
+        return Inertia::location('/course/' . $courseId);
+        // return Redirect::to('/course/' . $courseId);
     }
 }

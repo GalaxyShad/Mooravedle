@@ -12,8 +12,12 @@
         </div>
 
         <div v-if="isCreator">
-          <el-button tag="a" :href="`/course/${props.course.id}/edit`"> Изменить название </el-button>
-          <el-button @click="deleteCourse" type="danger"> Удалить курс </el-button>
+          <el-button tag="a" :href="`/course/${props.course.id}/edit`">
+            Изменить название
+          </el-button>
+          <el-button @click="deleteCourse" type="danger">
+            Удалить курс
+          </el-button>
         </div>
       </div>
     </template>
@@ -42,11 +46,16 @@
                 </div>
                 <a :href="`/task/${t.id}`">{{ t.name }}</a>
               </div>
-              <div class="flex flex-row items-center gap-2">
+              <div class="flex flex-row items-center gap-1">
                 <span class="text-gray-400"> {{ t.deadline }} </span>
-                <el-button v-if="isCreator" @click="() => onTaskDestroy(t.id)"
-                  >Удалить</el-button
-                >
+                <div>
+                  <el-button v-if="isCreator" tag="a" :href="`${props.course.id}/task/${t.id}/edit`">
+                    Изменить
+                  </el-button>
+                  <el-button  plain type="danger" v-if="isCreator" @click="() => onTaskDestroy(t.id)">
+                    Удалить
+                  </el-button>
+                </div>
               </div>
             </div>
           </div>
@@ -90,11 +99,20 @@
             <el-empty />
           </div>
           <div v-else class="flex flex-col gap-1">
-            <div v-for="u in props.participants" class="flex flex-row justify-between">
+            <div
+              v-for="u in props.participants"
+              class="flex flex-row justify-between"
+            >
               <div>
                 {{ u.name }}
               </div>
-              <el-button plain @click="() => removeParticipant(u.id)" type="danger" size="small">-</el-button>
+              <el-button
+                plain
+                @click="() => removeParticipant(u.id)"
+                type="danger"
+                size="small"
+                >-</el-button
+              >
             </div>
           </div>
         </div>
@@ -137,8 +155,8 @@
 import { Document } from '@element-plus/icons-vue'
 import Course from '@/Components/Course.vue'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
-import { Head, usePage, useForm, router } from '@inertiajs/vue3'
-import { computed, ref, onMounted } from 'vue'
+import { Head, usePage, useForm, router  } from '@inertiajs/vue3'
+import { computed, ref, onMounted, getCurrentInstance } from 'vue'
 import axios from 'axios'
 import { currentUser } from '@/Helpers/User'
 import { User } from 'vendor/laravel/breeze/stubs/inertia-react-ts/resources/js/types'
@@ -190,7 +208,7 @@ onMounted(async () => {
 })
 
 function onTaskDestroy(id: number) {
-  useForm({}).delete(route('task.destroy', { id }))
+  useForm({}).delete(route('task.destroy', { id, courseId: props.course.id }))
 }
 
 function addUsersToCourse() {
@@ -201,16 +219,16 @@ function addUsersToCourse() {
 
 function removeParticipant(id: number) {
   useForm({}).delete(
-    route('course.remove_participant', { id: props.course.id, participant_id: id})
+    route('course.remove_participant', {
+      id: props.course.id,
+      participant_id: id,
+    })
   )
 }
 
 function deleteCourse() {
-  useForm({}).delete(
-    route('course.delete', { id: props.course.id })
-  )
+  useForm({}).delete(route('course.delete', { id: props.course.id }))
 }
-
 
 async function searchUser(search_value: string) {
   isUsersToInviteLoading.value = true
@@ -223,7 +241,7 @@ async function searchUser(search_value: string) {
     disabled:
       props.participants.find((y) => y.id === x.id) !== undefined ||
       x.id === props.course.creator.id,
-  }));
+  }))
 
   isUsersToInviteLoading.value = false
 }

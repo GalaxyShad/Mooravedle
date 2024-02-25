@@ -48,7 +48,7 @@ class CourseController extends Controller
             ->participants()
             ->attach($req->users);
 
-        return Redirect::to('/course/' . $id);
+            return Inertia::location('/course/' . $id);
     }
 
     public function removeParticipant(string $course_id, string $participant_id) 
@@ -57,7 +57,7 @@ class CourseController extends Controller
 
         $course->participants()->detach($participant_id);
 
-        return Redirect::to('/course/' . $course_id);
+        return Inertia::location('/course/' . $course_id);
     }
 
     /**

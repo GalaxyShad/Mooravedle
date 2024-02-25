@@ -38,8 +38,6 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/profile/search', [ProfileController::class, 'search'])->name("profile.search");
 
-    Route::get('/course/task', function () { return Inertia::render('TaskAdd'); });
-
     Route::get('/course/{id}', [CourseController::class, 'show'])->name('course.show');
     Route::get('/course/{id}/edit',[CourseController::class, 'edit'])->name("course.edit");
     Route::post('/course/{id}/participants', [CourseController::class, 'addParticipants'])->name('course.add_participant');
@@ -51,9 +49,12 @@ Route::middleware('auth')->group(function () {
     Route::patch('/course/{id}', [CourseController::class, 'update'])->name('course.update');
     
     Route::get('/task/{id}', [TaskController::class, 'show'])->name('task.show');
-    Route::delete('/task/{id}', [TaskController::class, 'destroy'])->name('task.destroy');
+    Route::patch('/task/{id}', [TaskController::class, 'update'])->name('task.update');
+
+    Route::delete('/course/{courseId}/task/{id}', [TaskController::class, 'destroy'])->name('task.destroy');
 
     Route::get('/course/{id}/task', [TaskController::class, 'create'])->name('task.create');
+    Route::get('/course/{courseId}/task/{id}/edit', [TaskController::class, 'edit'])->name('task.edit');
     Route::post('/course/{id}/task', [TaskController::class, 'store'])->name('task.store');
 });
 
