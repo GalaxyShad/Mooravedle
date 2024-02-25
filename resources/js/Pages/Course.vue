@@ -107,6 +107,7 @@
                 {{ u.name }}
               </div>
               <el-button
+                v-if="isCreator"
                 plain
                 @click="() => removeParticipant(u.id)"
                 type="danger"
