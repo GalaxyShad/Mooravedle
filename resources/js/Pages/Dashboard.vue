@@ -5,13 +5,13 @@
     <template #header>
       <div class="flex flex-row justify-between items-center">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-          {{ `Список курсов (${courseCount})` }}
+          {{ `Список курсов (${courseList.total})` }}
         </h2>
         <el-button
           v-if="currentUser().is_teacher"
           type="primary"
           tag="a"
-          href="/course"
+          :href="route('course.create')"
         >
           Создать новый курс
         </el-button>
@@ -19,20 +19,20 @@
     </template>
 
     <div
-      v-if="courseList.length !== 0"
+      v-if="courseList.data.length !== 0"
       class="flex flex-row flex-wrap gap-4 py-4 justify-center mx-auto"
     >
-      <a v-for="c in courseList" :href="`/course/${c.id}`">
+      <a v-for="c in courseList.data" :href="route('course.show', c.id)">
         <Course :name="c.name" :teacher="c.creator.name" />
       </a>
     </div>
     <el-empty v-else />
     <el-pagination
-      @change="pageChange"
+      @current-change="pageChange"
       class="w-full items-center justify-center"
       layout="prev, pager, next"
-      :default-current-page="+currentPage"
-      :page-count="pagesCount"
+      :current-page="courseList.current_page"
+      :page-count="courseList.last_page"
     />
   </AuthenticatedLayout>
 </template>
@@ -41,7 +41,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import Course from '@/Components/Course.vue'
 
-import { Head, useForm, usePage, router } from '@inertiajs/vue3'
+import { Head, usePage, router } from '@inertiajs/vue3'
 import { currentUser } from '@/Helpers/User'
 import { computed } from 'vue'
 
@@ -53,17 +53,12 @@ interface Course {
   }
 }
 
-const currentPage = usePage().props.currentPage
-const pageName = usePage().props.pageName
-const pagesCount = computed<number>(() => usePage().props.pagesTotal as number)
-const courseCount = usePage().props.courseCount
-
-const courseList = computed<Course[]>(
-  () => usePage().props.courseList as Course[]
+const courseList = computed<{ data: Course[], total: number, current_page: number, last_page: number }>(
+  () => usePage().props.courseList as { data: Course[], total: number, current_page: number, last_page: number }
 )
 
-function pageChange(page: string) {
-  router.get('/' + pageName + '/' + page)
+function pageChange(page: number) {
+  router.get(route('dashboard'), { page }, { preserveState: true })
 }
 
 </script>

@@ -7,66 +7,53 @@ use App\Models\Task;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
-use PHPUnit\Framework\Constraint\Count;
 
 class CourseController extends Controller
 {
     private int $items_per_page = 12;
 
-    /**
-     * Display a listing of the resource.
-     */
-    public function indexDashboard(int $page = 1)
+    public function __construct()
     {
-        $course_count = Course::count(); 
+        $this->middleware('auth');
+    }
+
+    public function indexDashboard()
+    {
+        $courses = Course::with('creator')
+            ->paginate($this->items_per_page);
 
         return Inertia::render('Dashboard', [
-            'courseList' => Course::with('creator')
-                ->get()
-                ->skip(($page-1) * $this->items_per_page)
-                ->take($this->items_per_page),
-            'courseCount' => $course_count,
-            'currentPage' => $page,
+            'courseList' => $courses,
             'pageName' => "dashboard",
-            'pagesTotal' => ceil($course_count / $this->items_per_page)
         ]);
     }
 
-    public function indexCreatedCourses(int $page = 1)
+    public function indexCreatedCourses()
     {
-        $course_count = Course::where('creator_id', Auth::user()->id)->count();
+        $courses = Course::where('creator_id', Auth::id())
+            ->with('creator')
+            ->paginate($this->items_per_page);
 
         return Inertia::render('Dashboard', [
-            'courseList' => Course::where('creator_id', Auth::user()->id)
-                ->with('creator')
-                ->skip(($page-1) * $this->items_per_page)
-                ->take($this->items_per_page)
-                ->get(),
-            'courseCount' => $course_count,
-            'currentPage' => $page,
+            'courseList' => $courses,
             'pageName' => "createdcourses",
-            'pagesTotal' => ceil($course_count / $this->items_per_page)
         ]);
     }
 
-    public function indexMyCourses(int $page = 1)
+    public function indexMyCourses()
     {
-        $user = User::where('id', Auth::user()->id)->get()->first();
-        $course_count = $user->myCourses()->count();
+        $courses = User::where('id', Auth::user()->id)
+            ->get()
+            ->first()
+            ->myCourses()
+            ->with('creator')
+            ->paginate($this->items_per_page);
 
         return Inertia::render('Dashboard', [
-            'courseList' => $user->myCourses()
-                ->with('creator')
-                ->skip(($page-1) * $this->items_per_page)
-                ->take($this->items_per_page)
-                ->get(),
-            'courseCount' => $course_count,
-            'currentPage' => $page,
+            'courseList' => $courses,
             'pageName' => "mycourses",
-            'pagesTotal' => ceil($course_count / $this->items_per_page)
         ]);
     }
 
